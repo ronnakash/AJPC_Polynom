@@ -15,7 +15,7 @@ public class Polynom {
     }
 
 
-
+    // adds polynom to another
     public static Polynom plus(Polynom polyA, Polynom polyB) {
         Polynom resultPolynom;
         int[] resultExponents = getCombinedExponentArray(polyA, polyB);
