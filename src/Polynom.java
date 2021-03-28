@@ -1,15 +1,14 @@
-import java.awt.*;
 import java.util.*;
-import java.io.*;
-import java.lang.*;
 import java.util.List;
 
 public class Polynom {
     int[] exponents;
     double[] coefficients;
 
-    public Polynom(int[] exp, double[] coef) throws Exception {
-        //if(exp.length != coef.length)
+    public Polynom(int[] exp, double[] coef) throws ArrayLengthsUnmatchException {
+        if(exp.length != coef.length){
+            throw new ArrayLengthsUnmatchException(coef.length, coef.length);
+        }
         exponents = exp;
         coefficients = coef;
     }
@@ -182,22 +181,14 @@ public class Polynom {
     }
         
         
-    public static class Pair<Double,Integer> implements Comparable<Pair>{
-        Double coef;
-        Integer exp;
+    public class ArrayLengthsUnmatchException extends RuntimeException{
+        int coefLength;
+        int expLength;
 
-    public Pair(Double co, Integer ex){
-        coef = co;
-        exp = ex;
-    }
-
-        @Override
-        public int compareTo(Pair o) {
-            if(((int)this.exp) > ((int)o.exp))
-                return 1;
-            if(((int)this.exp) < ((int)o.exp))
-                return -1;
-            return 0;
+        public ArrayLengthsUnmatchException(int coefLength, int expLength){
+            super("found coefficient array length "+ coefLength + " and exponnent array length "+ expLength);
+            this.coefLength = coefLength;
+            this.expLength = expLength;
         }
     }
 
