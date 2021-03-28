@@ -59,6 +59,24 @@ public class Polynom {
         return resultPolynom;
     }
 
+    // returns derivative polynom of given polynom;
+    public Polynom derivative(){
+        int size = exponents.length, newSize = size;
+        int[] newExpArray, tempExpArray = new int[size];
+        double[] newCoefArray, tempCoefArray = new double[size];
+        for(int i=0; i<size-1; i++)
+            tempExpArray[i] = exponents[i]-1;
+        if (exponents[size-1]==0) //exponent zero can only be the last one
+            newSize--;
+        newCoefArray = new double[newSize];
+        newExpArray = new int[newSize];
+        for(int i=0; i<newSize; i++){
+            newExpArray[i] =  tempExpArray[i];
+            newCoefArray[i] = tempCoefArray[i];
+        }
+        return new Polynom(newExpArray,newCoefArray);
+    }
+
     // gets two polynoms and combines their exponent arrays
     public static int[] getCombinedExponentArray(Polynom polyA, Polynom polyB) {
         int[] combinedExponentArray, tempExponentsArray = new int[polyA.exponents.length + polyB.exponents.length];
@@ -149,19 +167,24 @@ public class Polynom {
     public static Polynom getPolynomFromInput(){
         Polynom newPoly;
         Pair polyPair;
-        Double coef;
-        Integer exp;
-        List<Pair> polyPairs = new LinkedList<Pair>();
+        List<Pair> polyPairs = new ArrayList<Pair>();
         //get next pair
         while (true){
             polyPair = getNextPair();
             if(polyPair == null)
                 break;
-            //add to list sorted by exp; check if exponent already defined in this polynom
-
+            //add to list ; check if exponent already defined in this polynom
+            polyPairs.add(polyPair);
         }
         //check that the polyPairs is not empty
-
+        if(polyPairs.size()==0){
+            System.out.println("started with 0, retry");
+            return getPolynomFromInput();
+        }
+        //sort by exp
+        Collections.sort(polyPairs);
+        //check if the same exponent defined more than once
+        checkPairListForDuplicateExponents(polyPairs);
     }
 
 
@@ -192,8 +215,17 @@ public class Polynom {
         }
     }
 
-
-
-
+    public static void checkPairListForDuplicateExponents(List<Pair> pairList){
+        Iterator pairListIterator = pairList.iterator();
+        Pair thisP, prevP = (Pair) pairListIterator.next();
+        while (pairListIterator.hasNext()){
+            thisP = (Pair) pairListIterator.next();
+            if (thisP.exp == prevP.exp){
+                thisP.coef += prevP.coef;
+                pairList.remove(prevP);
+            }
+            prevP = thisP;
+        }
+    }
 }
 
