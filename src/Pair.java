@@ -14,6 +14,6 @@ public class Pair implements Comparable{
         if(this.exp == null && ((Pair) o).exp == null) return 0;
         if(this.exp==null) return -1;
         if(((Pair) o).exp==null) return -1;
-        return this.exp.compareTo(((Pair) o).exp);
+        return this.exp.compareTo(((Pair) o).exp)*-1;
     }
 }

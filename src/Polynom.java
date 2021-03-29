@@ -6,7 +6,7 @@ public class Polynom {
     double[] coefficients;
 
     public Polynom(int[] exp, double[] coef) throws ArrayLengthsUnmatchException {
-        if(exp.length != coef.length){
+        if (exp.length != coef.length) {
             throw new ArrayLengthsUnmatchException(coef.length, coef.length);
         }
         exponents = exp;
@@ -19,27 +19,26 @@ public class Polynom {
         Polynom resultPolynom;
         int[] resultExponents = getCombinedExponentArray(polyA, polyB);
         double[] resultcoefficients = new double[resultExponents.length];
-        int idxA = 0, idxB = 0;
+        int idxA = 0, idxB = 0, i = 0;
         while (idxA < polyA.coefficients.length && idxB < polyB.coefficients.length) {
-            if (polyA.exponents[idxA] == resultExponents[idxA + idxB])
-                resultcoefficients[idxA + idxB] += polyA.coefficients[(idxA++) + idxB];
-            if (polyB.exponents[idxA] == resultExponents[idxA + idxB])
-                resultcoefficients[idxA + idxB] += polyB.coefficients[idxA + (idxB++)];
+            if (polyA.exponents[idxA] == resultExponents[i])
+                resultcoefficients[i] += polyA.coefficients[idxA++];
+            if (polyB.exponents[idxB] == resultExponents[i])
+                resultcoefficients[i] += polyB.coefficients[idxB++];
+            i++;
         }
         if (idxA < polyA.coefficients.length) {
             while (idxA < polyA.coefficients.length)
-                resultcoefficients[idxA + idxB] += polyA.coefficients[idxA++];
+                resultcoefficients[i++] += polyA.coefficients[idxA++];
         } else if (idxB < polyB.coefficients.length) {
             while (idxB < polyB.coefficients.length)
-                resultcoefficients[idxA + idxB] += polyA.coefficients[idxB++];
+                resultcoefficients[i++] += polyB.coefficients[idxB++];
         }
-
         try {
             resultPolynom = new Polynom(resultExponents, resultcoefficients);
-            // TODO: remove exponents and coefficients where coefficients are zero
+            // remove exponents and coefficients where coefficients are zero
             resultPolynom.removeZeroCoefficients();
         } catch (Exception e) {
-            e.printStackTrace();
             resultPolynom = null;
         }
         return resultPolynom;
@@ -50,7 +49,7 @@ public class Polynom {
         Polynom resultPolynom, tempSubtractorPoly;
         try { //???
             tempSubtractorPoly = new Polynom(subtractor.exponents, subtractor.coefficients);
-        } catch (Exception unexpectedException){
+        } catch (Exception unexpectedException) {
             unexpectedException.printStackTrace();
             return null;
         }
@@ -60,57 +59,55 @@ public class Polynom {
     }
 
     // returns derivative polynom of given polynom;
-    public Polynom derivative(){
+    public Polynom derivative() {
         int size = exponents.length, newSize = size;
-        int[] newExpArray, tempExpArray = new int[size];
-        double[] newCoefArray, tempCoefArray = new double[size];
-        for(int i=0; i<size-1; i++)
-            tempExpArray[i] = exponents[i]-1;
-        if (exponents[size-1]==0) //exponent zero can only be the last one
+        int[] newExpArray;
+        double[] newCoefArray;
+        if (exponents[size - 1] == 0) //exponent zero can only be the last one
             newSize--;
         newCoefArray = new double[newSize];
         newExpArray = new int[newSize];
-        for(int i=0; i<newSize; i++){
-            newExpArray[i] =  tempExpArray[i];
-            newCoefArray[i] = tempCoefArray[i];
+        for (int i = 0; i < newSize; i++) {
+            newExpArray[i] = exponents[i];
+            newCoefArray[i] = coefficients[i];
         }
-        return new Polynom(newExpArray,newCoefArray);
+        return new Polynom(newExpArray, newCoefArray);
     }
 
     // gets two polynoms and combines their exponent arrays
     public static int[] getCombinedExponentArray(Polynom polyA, Polynom polyB) {
         int[] combinedExponentArray, tempExponentsArray = new int[polyA.exponents.length + polyB.exponents.length];
-        int idxA = 0, idxB = 0, finalSize = tempExponentsArray.length;
+        int i = 0, idxA = 0, idxB = 0, finalSize = tempExponentsArray.length;
         while (idxA < polyA.exponents.length && idxB < polyB.exponents.length) {
             if (polyA.exponents[idxA] > polyB.exponents[idxB])
-                tempExponentsArray[idxA + idxB] = polyA.exponents[idxA++];
+                tempExponentsArray[i++] = polyA.exponents[idxA++];
             else if (polyB.exponents[idxB] > polyA.exponents[idxA])
-                tempExponentsArray[idxA + idxB] = polyA.exponents[idxB++];
+                tempExponentsArray[i++] = polyB.exponents[idxB++];
             else {
-                tempExponentsArray[idxA++ + idxB++] = polyA.exponents[idxA];
+                tempExponentsArray[i++] = polyA.exponents[idxA++];
+                idxB++;
                 finalSize--;
             }
         }
         if (idxA < polyA.exponents.length) {
             while (idxA < polyA.exponents.length)
-                tempExponentsArray[idxA + idxB] = polyA.exponents[idxA++];
+                tempExponentsArray[i++] = polyA.exponents[idxA++];
         } else if (idxB < polyB.exponents.length) {
             while (idxB < polyB.exponents.length)
-                tempExponentsArray[idxA + idxB] = polyA.exponents[idxB++];
+                tempExponentsArray[i++] = polyB.exponents[idxB++];
         }
         combinedExponentArray = new int[finalSize];
-        for (int i = 0; i < finalSize; i++)
-            combinedExponentArray[i] = tempExponentsArray[i];
+        System.arraycopy(tempExponentsArray, 0, combinedExponentArray, 0, finalSize);
         return combinedExponentArray;
     }
 
     //remove coefficients and exponents where coefficient is zero
-    public void removeZeroCoefficients(){
-        int size = exponents.length, j=0;
+    public void removeZeroCoefficients() {
+        int size = exponents.length, j = 0;
         double[] newCoefficients, tempCoefficients = new double[size];
         int[] newExponents, tempExponents = new int[size];
-        for (int i=0; i<exponents.length; i++){
-            if(coefficients[i]==0.0)
+        for (int i = 0; i < exponents.length; i++) {
+            if (coefficients[i] == 0.0)
                 size--;
             else {
                 tempExponents[j] = exponents[i];
@@ -119,9 +116,9 @@ public class Polynom {
         }
         newExponents = new int[size];
         newCoefficients = new double[size];
-        for (int i=0; i<size; i++) {
-            newCoefficients[i]= tempCoefficients[i];
-            newExponents[i]=newExponents[i];
+        for (int i = 0; i < size; i++) {
+            newCoefficients[i] = tempCoefficients[i];
+            newExponents[i] = tempExponents[i];
         }
         coefficients = newCoefficients;
         exponents = newExponents;
@@ -129,103 +126,115 @@ public class Polynom {
 
     public String toString() {
         String polyString = new String();
-        for (int i = 0; i < coefficients.length; i++) { //TODO: one concat
-            polyString.concat(String.valueOf(coefficients[i]));
-            polyString.concat("*x^");
-            polyString.concat(String.valueOf(exponents[i]));
-            polyString.concat("+");
-        }
-        return polyString.substring(0,polyString.length()-1);
+        for (int i = 0; i < coefficients.length - 1; i++)
+            polyString = polyString.concat(String.valueOf(coefficients[i])).concat("*x^").concat(String.valueOf(exponents[i])).concat("+");
+        polyString = polyString.concat(String.valueOf(coefficients[coefficients.length - 1]));
+        if (exponents[exponents.length - 1] != 0)
+            polyString = polyString.concat("*x^").concat(String.valueOf(exponents[coefficients.length - 1]));
+        return polyString;
     }
 
-    public boolean equals(Polynom otherPoly){
-        if(this.exponents.length != otherPoly.exponents.length)
+    public boolean equals(Polynom otherPoly) {
+        if (this.exponents.length != otherPoly.exponents.length)
             return false;
-        for (int i = 0; i < this.coefficients.length; i++){
-            if(this.exponents[i] != otherPoly.exponents[i] || this.coefficients[i] != otherPoly.coefficients[i])
+        for (int i = 0; i < this.coefficients.length; i++) {
+            if (this.exponents[i] != otherPoly.exponents[i] || this.coefficients[i] != otherPoly.coefficients[i])
                 return false;
         }
-    return true;
+        return true;
     }
 
-    public void flipCoefficients(){
-        for(int i=0; i<coefficients.length; i++)
-            coefficients[i] -= 2.0*coefficients[i];
+    public void flipCoefficients() {
+        for (int i = 0; i < coefficients.length; i++)
+            coefficients[i] -= 2.0 * coefficients[i];
     }
 
-    public static void main(String[] args){
-        Polynom firstPoly, secondPoly,;
+    public static void main(String[] args) {
+        Polynom firstPoly, secondPoly;
         firstPoly = getPolynomFromInput();
         System.out.println("first polynom: " + firstPoly);
         secondPoly = getPolynomFromInput();
         System.out.println("second polymon: " + secondPoly);
-        System.out.println("addition: (" + firstPoly + ") + (" + secondPoly +") = " + plus(firstPoly,secondPoly));
-        System.out.println("subtraction: (" + firstPoly + ") - (" + secondPoly +") = " + minus(firstPoly,secondPoly));
-
+        System.out.println("addition: (" + firstPoly + ") + (" + secondPoly + ") = " + plus(firstPoly, secondPoly));
+        System.out.println("subtraction: (" + firstPoly + ") - (" + secondPoly + ") = " + minus(firstPoly, secondPoly));
+        System.out.println("derivative of first polynom: " + firstPoly.derivative());
+        System.out.println("derivative of second polynom: " + secondPoly.derivative());
     }
 
-    public static Polynom getPolynomFromInput(){
+    public static Polynom getPolynomFromInput() {
         Polynom newPoly;
         Pair polyPair;
         List<Pair> polyPairs = new ArrayList<Pair>();
+        Scanner scan = new Scanner(System.in);
         //get next pair
-        while (true){
-            polyPair = getNextPair();
-            if(polyPair == null)
+        while (true) {
+            polyPair = getNextPair(scan);
+            if (polyPair == null)
                 break;
             //add to list ; check if exponent already defined in this polynom
-            polyPairs.add(polyPair);
+            addPolyToList(polyPairs, polyPair);
         }
         //check that the polyPairs is not empty
-        if(polyPairs.size()==0){
+        if (polyPairs.size() == 0) {
             System.out.println("started with 0, retry");
             return getPolynomFromInput();
         }
         //sort by exp
         Collections.sort(polyPairs);
-        //check if the same exponent defined more than once
-        checkPairListForDuplicateExponents(polyPairs);
+        newPoly = makePolynomFromPolyPairsList(polyPairs);
+        newPoly.removeZeroCoefficients();
+        return newPoly;
     }
 
+    public static void addPolyToList(List<Pair> pairList, Pair polyPair) {
+        boolean contains = false;
+        for (Pair pair : pairList) {
+            if (pair.exp == polyPair.exp) {
+                pair.coef += polyPair.coef;
+                contains = true;
+            }
+        }
+        if (!contains)
+            pairList.add(polyPair);
+    }
 
-    public static Pair getNextPair(){
+    public static Polynom makePolynomFromPolyPairsList(List<Pair> polyPairs) {
+        int[] newExpArray = new int[polyPairs.size()];
+        double[] newCoefArray = new double[polyPairs.size()];
+        int i = 0;
+        for (Pair polyPair : polyPairs) {
+            newCoefArray[i] = polyPair.coef;
+            newExpArray[i++] = polyPair.exp;
+        }
+        return new Polynom(newExpArray, newCoefArray);
+    }
+
+    public static Pair getNextPair(Scanner scan) {
         Pair newPair;
         Integer newExp;
         Double newCoef;
-        Scanner scan = new Scanner(System.in);
         System.out.println("Enter next coefficient for new polynom. Enter 0 to stop");
         newCoef = scan.nextDouble();
-        if(newCoef == 0)
+        if (newCoef == 0)
             return null;
         System.out.println("Enter the exponent for coefficient");
         newExp = scan.nextInt();
-        newPair = new Pair(newCoef,newExp);
+        newPair = new Pair(newCoef, newExp);
         return newPair;
     }
-        
-        
-    public class ArrayLengthsUnmatchException extends RuntimeException{
+
+
+    public class ArrayLengthsUnmatchException extends RuntimeException {
         int coefLength;
         int expLength;
 
-        public ArrayLengthsUnmatchException(int coefLength, int expLength){
-            super("found coefficient array length "+ coefLength + " and exponnent array length "+ expLength);
+        public ArrayLengthsUnmatchException(int coefLength, int expLength) {
+            super("found coefficient array length " + coefLength + " and exponnent array length " + expLength);
             this.coefLength = coefLength;
             this.expLength = expLength;
         }
     }
 
-    public static void checkPairListForDuplicateExponents(List<Pair> pairList){
-        Iterator pairListIterator = pairList.iterator();
-        Pair thisP, prevP = (Pair) pairListIterator.next();
-        while (pairListIterator.hasNext()){
-            thisP = (Pair) pairListIterator.next();
-            if (thisP.exp == prevP.exp){
-                thisP.coef += prevP.coef;
-                pairList.remove(prevP);
-            }
-            prevP = thisP;
-        }
-    }
+    /**/
 }
 
