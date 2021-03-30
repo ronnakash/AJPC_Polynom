@@ -226,83 +226,24 @@ public class Polynom {
      * @return the polynom from input
      */
     public static Polynom getPolynomFromInput() {
-        Polynom newPoly;
-        Pair polyPair;
-        List<Pair> polyPairs = new ArrayList<Pair>();
+        int[] tempExp = new int[1];
+        double[] tempCoef = new double[1];
+        Polynom tempPoly ,newPoly= new Polynom(tempExp, tempCoef);
         Scanner scan = new Scanner(System.in);
-        //get next pair
-        while (true) {
-            polyPair = getNextPair(scan);
-            if (polyPair == null)
-                break;
-            //add to list ; check if exponent already defined in this polynom
-            addPolyToList(polyPairs, polyPair);
-        }
-        //check that the polyPairs is not empty
-        if (polyPairs.size() == 0) {
-            System.out.println("started with 0, retry");
-            return getPolynomFromInput();
-        }
-        //sort by exp
-        Collections.sort(polyPairs);
-        newPoly = makePolynomFromPolyPairsList(polyPairs);
-        newPoly.removeZeroCoefficients();
-        return newPoly;
-    }
-
-    /**
-     * Add poly to list.
-     *
-     * @param pairList the pair list
-     * @param polyPair the poly pair
-     */
-    public static void addPolyToList(List<Pair> pairList, Pair polyPair) {
-        boolean contains = false;
-        for (Pair pair : pairList) {
-            if (pair.exp == polyPair.exp) {
-                pair.coef += polyPair.coef;
-                contains = true;
-            }
-        }
-        if (!contains)
-            pairList.add(polyPair);
-    }
-
-    /**
-     * Make polynom from poly pairs list polynom.
-     *
-     * @param polyPairs the poly pairs
-     * @return the polynom
-     */
-    public static Polynom makePolynomFromPolyPairsList(List<Pair> polyPairs) {
-        int[] newExpArray = new int[polyPairs.size()];
-        double[] newCoefArray = new double[polyPairs.size()];
-        int i = 0;
-        for (Pair polyPair : polyPairs) {
-            newCoefArray[i] = polyPair.coef;
-            newExpArray[i++] = polyPair.exp;
-        }
-        return new Polynom(newExpArray, newCoefArray);
-    }
-
-    /**
-     * Gets next pair.
-     *
-     * @param scan the scan
-     * @return the next pair
-     */
-    public static Pair getNextPair(Scanner scan) {
-        Pair newPair;
-        Integer newExp;
-        Double newCoef;
         System.out.println("Enter next coefficient for new polynom. Enter 0 to stop");
-        newCoef = scan.nextDouble();
-        if (newCoef == 0)
-            return null;
-        System.out.println("Enter the exponent for coefficient");
-        newExp = scan.nextInt();
-        newPair = new Pair(newCoef, newExp);
-        return newPair;
+        tempCoef = new double[1];
+        tempCoef[0] = scan.nextDouble();
+        while (tempCoef[0]!=0.0){
+            System.out.println("Enter the exponent for coefficient");
+            tempExp = new int[1];
+            tempExp[0] = scan.nextInt();
+            tempPoly = new Polynom(tempExp,tempCoef);
+            newPoly = plus(newPoly,tempPoly);
+            System.out.println("Enter next coefficient for new polynom. Enter 0 to stop");
+            tempCoef = new double[1];
+            tempCoef[0] = scan.nextDouble();
+        }
+        return newPoly;
     }
 
 
