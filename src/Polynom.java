@@ -1,10 +1,26 @@
 import java.util.*;
 import java.util.List;
 
+/**
+ * The type Polynom.
+ */
 public class Polynom {
+    /**
+     * The Exponents.
+     */
     int[] exponents;
+    /**
+     * The Coefficients.
+     */
     double[] coefficients;
 
+    /**
+     * Instantiates a new Polynom.
+     *
+     * @param exp  the exp
+     * @param coef the coef
+     * @throws ArrayLengthsUnmatchException the array lengths unmatch exception
+     */
     public Polynom(int[] exp, double[] coef) throws ArrayLengthsUnmatchException {
         if (exp.length != coef.length) {
             throw new ArrayLengthsUnmatchException(coef.length, coef.length);
@@ -14,7 +30,14 @@ public class Polynom {
     }
 
 
-    // adds polynom to another
+    /**
+     * Plus polynom.
+     *
+     * @param polyA the poly a
+     * @param polyB the poly b
+     * @return the polynom
+     */
+// adds polynom to another
     public static Polynom plus(Polynom polyA, Polynom polyB) {
         Polynom resultPolynom;
         int[] resultExponents = getCombinedExponentArray(polyA, polyB);
@@ -44,7 +67,14 @@ public class Polynom {
         return resultPolynom;
     }
 
-    // subtract subtractor polynom from subtractee polynom and return new polynom result
+    /**
+     * Minus polynom.
+     *
+     * @param subtractee the subtractee
+     * @param subtractor the subtractor
+     * @return the polynom
+     */
+// subtract subtractor polynom from subtractee polynom and return new polynom result
     public static Polynom minus(Polynom subtractee, Polynom subtractor) {
         Polynom resultPolynom, tempSubtractorPoly;
         try { //???
@@ -58,7 +88,12 @@ public class Polynom {
         return resultPolynom;
     }
 
-    // returns derivative polynom of given polynom;
+    /**
+     * Derivative polynom.
+     *
+     * @return the polynom
+     */
+// returns derivative polynom of given polynom;
     public Polynom derivative() {
         int size = exponents.length, newSize = size;
         int[] newExpArray;
@@ -74,7 +109,14 @@ public class Polynom {
         return new Polynom(newExpArray, newCoefArray);
     }
 
-    // gets two polynoms and combines their exponent arrays
+    /**
+     * Get combined exponent array int [ ].
+     *
+     * @param polyA the poly a
+     * @param polyB the poly b
+     * @return the int [ ]
+     */
+// gets two polynoms and combines their exponent arrays
     public static int[] getCombinedExponentArray(Polynom polyA, Polynom polyB) {
         int[] combinedExponentArray, tempExponentsArray = new int[polyA.exponents.length + polyB.exponents.length];
         int i = 0, idxA = 0, idxB = 0, finalSize = tempExponentsArray.length;
@@ -101,7 +143,10 @@ public class Polynom {
         return combinedExponentArray;
     }
 
-    //remove coefficients and exponents where coefficient is zero
+    /**
+     * Remove zero coefficients.
+     */
+//remove coefficients and exponents where coefficient is zero
     public void removeZeroCoefficients() {
         int size = exponents.length, j = 0;
         double[] newCoefficients, tempCoefficients = new double[size];
@@ -125,7 +170,7 @@ public class Polynom {
     }
 
     public String toString() {
-        String polyString = new String();
+        String polyString = "";
         for (int i = 0; i < coefficients.length - 1; i++)
             polyString = polyString.concat(String.valueOf(coefficients[i])).concat("*x^").concat(String.valueOf(exponents[i])).concat("+");
         polyString = polyString.concat(String.valueOf(coefficients[coefficients.length - 1]));
@@ -134,6 +179,12 @@ public class Polynom {
         return polyString;
     }
 
+    /**
+     * Equals boolean.
+     *
+     * @param otherPoly the other poly
+     * @return the boolean
+     */
     public boolean equals(Polynom otherPoly) {
         if (this.exponents.length != otherPoly.exponents.length)
             return false;
@@ -144,11 +195,19 @@ public class Polynom {
         return true;
     }
 
+    /**
+     * Flip coefficients.
+     */
     public void flipCoefficients() {
         for (int i = 0; i < coefficients.length; i++)
             coefficients[i] -= 2.0 * coefficients[i];
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         Polynom firstPoly, secondPoly;
         firstPoly = getPolynomFromInput();
@@ -161,6 +220,11 @@ public class Polynom {
         System.out.println("derivative of second polynom: " + secondPoly.derivative());
     }
 
+    /**
+     * Gets polynom from input.
+     *
+     * @return the polynom from input
+     */
     public static Polynom getPolynomFromInput() {
         Polynom newPoly;
         Pair polyPair;
@@ -186,6 +250,12 @@ public class Polynom {
         return newPoly;
     }
 
+    /**
+     * Add poly to list.
+     *
+     * @param pairList the pair list
+     * @param polyPair the poly pair
+     */
     public static void addPolyToList(List<Pair> pairList, Pair polyPair) {
         boolean contains = false;
         for (Pair pair : pairList) {
@@ -198,6 +268,12 @@ public class Polynom {
             pairList.add(polyPair);
     }
 
+    /**
+     * Make polynom from poly pairs list polynom.
+     *
+     * @param polyPairs the poly pairs
+     * @return the polynom
+     */
     public static Polynom makePolynomFromPolyPairsList(List<Pair> polyPairs) {
         int[] newExpArray = new int[polyPairs.size()];
         double[] newCoefArray = new double[polyPairs.size()];
@@ -209,6 +285,12 @@ public class Polynom {
         return new Polynom(newExpArray, newCoefArray);
     }
 
+    /**
+     * Gets next pair.
+     *
+     * @param scan the scan
+     * @return the next pair
+     */
     public static Pair getNextPair(Scanner scan) {
         Pair newPair;
         Integer newExp;
@@ -224,10 +306,25 @@ public class Polynom {
     }
 
 
+    /**
+     * The type Array lengths unmatch exception.
+     */
     public class ArrayLengthsUnmatchException extends RuntimeException {
+        /**
+         * The Coef length.
+         */
         int coefLength;
+        /**
+         * The Exp length.
+         */
         int expLength;
 
+        /**
+         * Instantiates a new Array lengths unmatch exception.
+         *
+         * @param coefLength the coef length
+         * @param expLength  the exp length
+         */
         public ArrayLengthsUnmatchException(int coefLength, int expLength) {
             super("found coefficient array length " + coefLength + " and exponnent array length " + expLength);
             this.coefLength = coefLength;
