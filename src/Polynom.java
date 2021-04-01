@@ -78,7 +78,7 @@ public class Polynom {
     public static Polynom minus(Polynom subtractee, Polynom subtractor) {
         Polynom resultPolynom, tempSubtractorPoly;
         try { //???
-            tempSubtractorPoly = new Polynom(subtractor.exponents, subtractor.coefficients);
+            tempSubtractorPoly = new Polynom(subtractor.exponents, subtractor.coefficients.clone());
         } catch (Exception unexpectedException) {
             unexpectedException.printStackTrace();
             return null;
@@ -103,7 +103,7 @@ public class Polynom {
         newCoefArray = new double[newSize];
         newExpArray = new int[newSize];
         for (int i = 0; i < newSize; i++) {
-            newExpArray[i] = exponents[i];
+            newExpArray[i] = exponents[i]-1;
             newCoefArray[i] = coefficients[i];
         }
         return new Polynom(newExpArray, newCoefArray);
@@ -171,8 +171,11 @@ public class Polynom {
 
     public String toString() {
         String polyString = "";
-        for (int i = 0; i < coefficients.length - 1; i++)
-            polyString = polyString.concat(String.valueOf(coefficients[i])).concat("*x^").concat(String.valueOf(exponents[i])).concat("+");
+        for (int i = 0; i < coefficients.length - 1; i++) {
+            polyString = polyString.concat(String.valueOf(coefficients[i])).concat("*x^").concat(String.valueOf(exponents[i]));
+            if (coefficients[i+1]>=0)
+                polyString = polyString.concat("+");
+        }
         polyString = polyString.concat(String.valueOf(coefficients[coefficients.length - 1]));
         if (exponents[exponents.length - 1] != 0)
             polyString = polyString.concat("*x^").concat(String.valueOf(exponents[coefficients.length - 1]));

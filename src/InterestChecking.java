@@ -2,12 +2,12 @@ public class InterestChecking extends NoServiceChargeChecking{
     protected int accountInterestRate;
     final int DEFAULT_INTEREST_RATE = 1;
 
-    public InterestChecking(String accountNumber, String accountOwnerName, String accountOwnerId, double accountBalance, double minimumBalance) {
+    public InterestChecking(String accountNumber, String accountOwnerName, String accountOwnerId, double accountBalance) {
         super(accountNumber, accountOwnerName, accountOwnerId, accountBalance);
         accountInterestRate = DEFAULT_INTEREST_RATE;
     }
 
-    public InterestChecking(String accountNumber, String accountOwnerName, String accountOwnerId, double accountBalance, double minimumBalance, int accountInterestRate) {
+    public InterestChecking(String accountNumber, String accountOwnerName, String accountOwnerId, double accountBalance, int accountInterestRate) {
         super(accountNumber, accountOwnerName, accountOwnerId, accountBalance);
         this.accountInterestRate = accountInterestRate;
     }

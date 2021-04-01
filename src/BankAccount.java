@@ -85,6 +85,10 @@ public abstract class BankAccount {
         accountBalance -= withdrawAmount;
     }
 
-
+    public static void main(String[] args) {
+        HighInterestSavings highInterestSavingsAccount = new HighInterestSavings("12\\123456","Avi Cohen","12345678",1000.0 );
+        InterestChecking interestCheckingAccount = new InterestChecking("13\\123456","Dorit Cohen", "23456789",2000.0);
+        //ServiceChargeChecking serviceChargeCheckingAccount = new ServiceChargeChecking()
+    }
 
 }
